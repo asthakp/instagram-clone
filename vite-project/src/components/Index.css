@@ -1,0 +1,14 @@
+.story {
+  scroll-snap-align: center;
+}
+
+/* For older browsers, you may need to add -webkit- prefix */
+.story::-webkit-scrollbar {
+  display: none;
+}
+
+/* Add this class to the container */
+.scroll-container {
+  scroll-snap-type: x mandatory;
+  scroll-padding: 20px; /* Adjust this value as needed */
+}
