@@ -1,9 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import Post from "../Post/index";
 import Story from "../Story/index";
+import { getDataWithJWT } from "../../service/axios.service";
+import { jwtToken } from "../../utils/helper.utils";
 
 const feed = () => {
+  const [posts, setPosts] = useState<any>([]);
+  const token = jwtToken();
+
+  const getPosts = async () => {
+    const response = await getDataWithJWT("posts", token);
+    if (response.status) {
+      setPosts(response.data);
+    }
+  };
+  // const showLike = (response: any, postId: any) => {
+  //   const likedPost = posts.map((post: any) => {
+  //     postId === post._id ? response : post;
+  //   });
+  //   setPosts(likedPost);
+  // };
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
   return (
     <div className="w-full h-full bg-[#FAFAFA]">
       <Header />
@@ -11,9 +33,13 @@ const feed = () => {
         <div className="w-full min-h-full col-span-2">
           <Story />
           <div className="flex flex-col space-y-10">
-            {new Array(5).fill(0).map((_, i) => (
-              <Post />
-            ))}
+            {posts.map((item: any, i: any) => {
+              return (
+                <div key={i}>
+                  <Post item={item} />
+                </div>
+              );
+            })}
           </div>
         </div>
         {/* for sidebar*/}

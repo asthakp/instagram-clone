@@ -8,9 +8,12 @@ import { LiaFacebookMessenger } from "react-icons/lia";
 import { FaUserAlt } from "react-icons/fa";
 import Button from "@mui/material/Button";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../slice/auth.slice";
 
 const header = () => {
   const Navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleHomeIconClick = () => {
     Navigate("/home");
   };
@@ -28,6 +31,10 @@ const header = () => {
   };
   const handleUserIconClick = () => {
     Navigate("/profile");
+  };
+  const handleLogOut = () => {
+    dispatch(logout());
+    Navigate("/signin");
   };
   return (
     <>
@@ -51,7 +58,9 @@ const header = () => {
           <AiOutlineCompass onClick={handleCompassIconClick} />
           <BsHeart onClick={handleHeartIconClick} />
           <FaUserAlt onClick={handleUserIconClick} />
-          <Button variant="contained">Log out</Button>
+          <Button variant="contained" onClick={handleLogOut}>
+            Log out
+          </Button>
         </div>
       </div>
       <Outlet />

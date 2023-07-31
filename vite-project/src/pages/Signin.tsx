@@ -5,12 +5,15 @@ import Logo from "../images/Instagram.png";
 import { useEffect, useState } from "react";
 import { postData } from "../service/axios.service";
 import { errorToast, successToast } from "../service/toastify.service";
+import { useDispatch } from "react-redux";
+import { login } from "../slice/auth.slice";
 
 const Signin = () => {
   const [disabled, setDisabled] = useState(true);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -21,7 +24,9 @@ const Signin = () => {
     const response = await postData("users/login", data);
     if (response.status) {
       successToast(response.message);
+
       navigate("/feed");
+      dispatch(login(response.data));
     } else {
       errorToast(response.message);
     }

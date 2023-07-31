@@ -23,6 +23,7 @@ const Signup = () => {
       userName,
       password,
     };
+    console.log(data);
     const response = await postData("users/register", data);
     console.log(response);
     if (response.status) {
@@ -30,7 +31,7 @@ const Signup = () => {
       successToast(response.message);
       navigate("/signin");
     } else {
-      console.log(response.status);
+      console.log(response.error);
       errorToast(response.error);
     }
   };

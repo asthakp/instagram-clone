@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import image from "../images/Instagram.png";
+import { getDataWithJWT } from "../service/axios.service";
+import { jwtToken } from "../utils/helper.utils";
 
 const Profile = () => {
+  const [userPosts, setUserPosts] = useState([]);
+  const token = jwtToken();
+
+  const getUserPosts = async () => {
+    const response = await getDataWithJWT("myposts", token);
+    if (response.status) {
+      setUserPosts(response);
+    }
+  };
+  useEffect(() => {
+    getUserPosts();
+  });
   return (
     <div className="w-[60%] shadow-lg px-14 mt-20 mx-auto">
       <div className="flex justify-between items-center">
@@ -11,7 +25,7 @@ const Profile = () => {
             alt="profile pic"
             className="w-20 h-20 object-contain rounded-full border"
           />
-          <p className="font-semibold mt-1">User name</p>
+          <p className="font-semibold mt-1"></p>
         </div>
         <div className="flex space-x-10">
           <div className="posts ">
