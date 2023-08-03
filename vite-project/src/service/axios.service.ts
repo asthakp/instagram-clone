@@ -44,6 +44,17 @@ export const updateDataWithJWT = async (url: string, data: any, token: any) => {
   }
 };
 
+export const deleteDataWithJWT = async (url: string, token: any) => {
+  try {
+    const response = await axios.delete(`${SERVER_URL}/${url}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+  }
+};
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const postFileInCloudinary = async (url: string, data: any) => {

@@ -68,9 +68,30 @@ export const getPersonalPosts = async (req: any, res: Response) => {
   }
 };
 
+export const getPostById = async (req: any, res: Response) => {
+  try {
+    const isPost = await Post.findById(req.params.id);
+    if (!isPost) {
+      return res.status(404).json({
+        status: false,
+        message: "no post found",
+      });
+    } else {
+      res.status(200).json({
+        status: true,
+        data: isPost,
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
 export const likePost = async (req: any, res: Response) => {
   try {
-    const isResult = await Post.findById(req.params.id);
     const result = await Post.findByIdAndUpdate(
       req.params.id,
       { $push: { likes: req.user._id } },
@@ -149,6 +170,28 @@ export const unlikePost = async (req: any, res: Response) => {
         data: result,
       });
     }
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const deletePost = async (req: any, res: Response) => {
+  try {
+    const isPost = await Post.findOne({ _id: req.params.postId });
+    if (!isPost) {
+      return res.status(400).json({
+        status: false,
+        message: "post doesnt exist",
+      });
+    }
+    const deletedpost = await Post.findOneAndDelete({ _id: req.params.postId });
+    res.status(200).json({
+      status: true,
+      message: "post deleted successfully",
+    });
   } catch (error: any) {
     return res.status(500).json({
       status: false,

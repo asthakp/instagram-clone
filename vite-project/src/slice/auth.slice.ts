@@ -4,12 +4,14 @@ interface authInterface {
   jwt: string;
   isLoggedIn: boolean;
   isLiked: boolean;
+  loggedUser: string;
 }
 
 const initialState: authInterface = {
   jwt: "",
   isLoggedIn: false,
   isLiked: false,
+  loggedUser: "",
 };
 
 const authSlice = createSlice({
@@ -30,8 +32,11 @@ const authSlice = createSlice({
     unlike: (state) => {
       state.isLiked = false;
     },
+    userId: (state, data) => {
+      state.loggedUser = data.payload;
+    },
   },
 });
 
 export default authSlice.reducer;
-export const { login, logout, like, unlike } = authSlice.actions;
+export const { login, logout, like, unlike, userId } = authSlice.actions;

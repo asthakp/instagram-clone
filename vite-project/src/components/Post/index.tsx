@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BsBookmark,
   BsEmojiSmile,
@@ -8,30 +8,49 @@ import {
   BsThreeDots,
 } from "react-icons/bs";
 import { FaRegComment, FaRegShareSquare } from "react-icons/fa";
-import { updateDataWithJWT } from "../../service/axios.service";
+import { AiOutlineDelete } from "react-icons/ai";
+import {
+  deleteDataWithJWT,
+  getDataWithJWT,
+  updateDataWithJWT,
+} from "../../service/axios.service";
 import { jwtToken } from "../../utils/helper.utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { like } from "../../slice/auth.slice";
+import { Dropdown } from "react-bootstrap";
+import { successToast } from "../../service/toastify.service";
+import { useNavigate } from "react-router-dom";
 
-const index = ({ item }: any) => {
+const index = ({ item, filterItems }: any) => {
   const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState<any>([]);
+  const { loggedUser } = useSelector((state: any) => state.auth);
   const token = jwtToken();
-  const dispatch=useDispatch()
+  const navigate = useNavigate();
+
+  const getPost = async () => {
+    const response = await getDataWithJWT("posts", token);
+    response.data.map((post: any) => {
+      post.likes.includes(loggedUser) ? setIsLiked(true) : setIsLiked(false);
+    });
+  };
+
+  useEffect(() => {
+    getPost();
+  });
 
   const handleLike = async (id: string) => {
-    console.log(token);
-  
     const response = await updateDataWithJWT(
       isLiked ? `posts/unlike/${id}` : `posts/like/${id}`,
       null,
       token
     );
-    console.log(response);
-    if (response.status) {
-      // dispatch(like())
-      setIsLiked(isLiked ? false : true);
-    }
+    // console.log(response);
+    // if (response.status) {
+    //   response.data.likes.includes(loggedUser)
+    //     ? setIsLiked(true)
+    //     : setIsLiked(false);
+    // }
   };
 
   const makeComment = async (e: any, text: any, id: any) => {
@@ -50,6 +69,14 @@ const index = ({ item }: any) => {
     }
     console.log(comment);
   };
+  const handlePostDel = async (e: any, postId: string) => {
+    e.preventDefault();
+    const response = await deleteDataWithJWT(`posts/${postId}`, token);
+    if (response.status) {
+      filterItems(postId);
+      successToast(response.message);
+    }
+  };
   return (
     <section className="mt-4 border-gray-300 border w-full bg-white shadow-white">
       <div className="flex flex-col space-y-2">
@@ -59,10 +86,23 @@ const index = ({ item }: any) => {
             <div className="w-10 h-10 border-gray-400 rounded-full">
               <div className="w-10 h-10 bg-gradient-to-tr from-yellow-400 to bg-fuchsia-500 rounded-full ring-2 ring-offset-2"></div>
             </div>
-            <div className="font-semibold">{item.postedBy.userName}</div>
+            <div
+              className="font-semibold hover:underline hover:cursor-pointer"
+              onClick={(e: any) =>
+                loggedUser === item.postedBy._id
+                  ? navigate("/profile")
+                  : navigate(`/usersprofile/${item.postedBy._id}`)
+              }
+            >
+              {item.postedBy.userName}
+            </div>
           </div>
           <div>
-            <BsThreeDots />
+            {item.postedBy._id === loggedUser && (
+              <AiOutlineDelete
+                onClick={(e: any) => handlePostDel(e, item._id)}
+              />
+            )}
           </div>
         </div>
         {/* 2nd div- picture*/}

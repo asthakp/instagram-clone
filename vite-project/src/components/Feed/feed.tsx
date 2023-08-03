@@ -15,6 +15,12 @@ const feed = () => {
       setPosts(response.data);
     }
   };
+  const filterItems = (postId: any) => {
+    const filteredposts = posts.filter((post: any) => {
+      return post._id !== postId;
+    });
+    setPosts(filteredposts);
+  };
   // const showLike = (response: any, postId: any) => {
   //   const likedPost = posts.map((post: any) => {
   //     postId === post._id ? response : post;
@@ -36,7 +42,7 @@ const feed = () => {
             {posts.map((item: any, i: any) => {
               return (
                 <div key={i}>
-                  <Post item={item} />
+                  <Post item={item} filterItems={filterItems} />
                 </div>
               );
             })}

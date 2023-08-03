@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { postData } from "../service/axios.service";
 import { errorToast, successToast } from "../service/toastify.service";
 import { useDispatch } from "react-redux";
-import { login } from "../slice/auth.slice";
+import { login, userId } from "../slice/auth.slice";
 
 const Signin = () => {
   const [disabled, setDisabled] = useState(true);
@@ -26,7 +26,8 @@ const Signin = () => {
       successToast(response.message);
 
       navigate("/feed");
-      dispatch(login(response.data));
+      dispatch(login(response.data.jwt));
+      dispatch(userId(response.data._id));
     } else {
       errorToast(response.message);
     }

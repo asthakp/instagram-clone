@@ -15,7 +15,7 @@ const header = () => {
   const Navigate = useNavigate();
   const dispatch = useDispatch();
   const handleHomeIconClick = () => {
-    Navigate("/home");
+    Navigate("/feed");
   };
   const handleMessengerIconClick = () => {
     Navigate("/messenger");
@@ -43,6 +43,7 @@ const header = () => {
           src={Logo}
           alt="instagram logo"
           className="w-32 object-cover ml-8 "
+          onClick={(e: any) => Navigate("/feed")}
         />
         <div>
           <input
