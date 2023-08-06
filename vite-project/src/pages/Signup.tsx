@@ -23,15 +23,11 @@ const Signup = () => {
       userName,
       password,
     };
-    console.log(data);
     const response = await postData("users/register", data);
-    console.log(response);
     if (response.status) {
-      console.log(response.status);
       successToast(response.message);
       navigate("/signin");
     } else {
-      console.log(response.error);
       errorToast(response.error);
     }
   };

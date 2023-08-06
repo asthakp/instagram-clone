@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 interface UserInterface extends Document {
   fullName: String;
@@ -6,5 +6,8 @@ interface UserInterface extends Document {
   userName: String;
   jwt: String;
   password: String;
+  followers: mongoose.Schema.Types.ObjectId;
+  following: mongoose.Schema.Types.ObjectId;
+  photo: String;
 }
 export default UserInterface;

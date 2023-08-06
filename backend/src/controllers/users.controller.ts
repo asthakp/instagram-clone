@@ -7,7 +7,7 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const { email, userName, fullName, password } = req.body;
     const isUser = await User.findOne({ $or: [{ email }, { userName }] });
-    console.log(isUser);
+
     if (isUser) {
       return res.status(401).json({
         status: false,
@@ -108,6 +108,102 @@ export const getUserById = async (req: any, res: Response) => {
         },
       });
     }
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const followUser = async (req: any, res: Response) => {
+  try {
+    const isUser = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      { $push: { followers: req.user._id } },
+      { new: true }
+    );
+    console.log(isUser);
+    if (!isUser) {
+      return res.status(422).json({
+        status: false,
+        message: "user not found",
+      });
+    }
+    const loggedUser = await User.findByIdAndUpdate(
+      { _id: req.user._id },
+      { $push: { following: req.params.id } },
+      { new: true }
+    );
+    res.status(200).json({
+      status: true,
+      data: {
+        followedUser: isUser,
+        followedByUser: loggedUser,
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const unfollowUser = async (req: any, res: Response) => {
+  try {
+    const isUser = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      { $pull: { followers: req.user._id } },
+      { new: true }
+    );
+    if (!isUser) {
+      return res.status(422).json({
+        status: false,
+        message: "user not found",
+      });
+    }
+    const loggedUser = await User.findByIdAndUpdate(
+      { _id: req.user._id },
+      { $pull: { following: req.params.id } },
+      { new: true }
+    );
+    res.status(200).json({
+      status: true,
+      data: {
+        unfollowedUser: isUser,
+        unfollowedByUser: loggedUser,
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const uploadProfilePic = async (req: any, res: Response) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: {
+          photo: req.body.pic,
+        },
+      },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(401).json({
+        status: false,
+        message: "user not found",
+      });
+    }
+    res.status(200).json({
+      status: true,
+      data: user,
+    });
   } catch (error: any) {
     return res.status(500).json({
       status: false,

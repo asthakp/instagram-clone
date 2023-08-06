@@ -32,6 +32,21 @@ const userSchema = new mongoose.Schema<UserInterface>(
     jwt: {
       type: String,
     },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    photo: {
+      type: String,
+    },
   },
   {
     timestamps: true,

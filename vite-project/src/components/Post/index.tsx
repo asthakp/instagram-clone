@@ -21,36 +21,49 @@ import { Dropdown } from "react-bootstrap";
 import { successToast } from "../../service/toastify.service";
 import { useNavigate } from "react-router-dom";
 
-const index = ({ item, filterItems }: any) => {
+const index = ({
+  item,
+  filterItems,
+  showLike,
+  showUnLike,
+  showComment,
+}: any) => {
   const [isLiked, setIsLiked] = useState(false);
-  const [comment, setComment] = useState<any>([]);
+  const [comment, setComment] = useState<any>("");
   const { loggedUser } = useSelector((state: any) => state.auth);
   const token = jwtToken();
   const navigate = useNavigate();
 
-  const getPost = async () => {
-    const response = await getDataWithJWT("posts", token);
-    response.data.map((post: any) => {
-      post.likes.includes(loggedUser) ? setIsLiked(true) : setIsLiked(false);
-    });
+  //check if the post is liked on the first page load
+  const checkLike = () => {
+    if (item.likes.includes(loggedUser)) {
+      setIsLiked(true);
+    }
   };
-
   useEffect(() => {
-    getPost();
-  });
+    checkLike();
+  }, []);
+
+  // useEffect(() => {
+  //   showLike()
+  // }, [isLiked]);
 
   const handleLike = async (id: string) => {
-    const response = await updateDataWithJWT(
-      isLiked ? `posts/unlike/${id}` : `posts/like/${id}`,
-      null,
-      token
-    );
-    // console.log(response);
-    // if (response.status) {
-    //   response.data.likes.includes(loggedUser)
-    //     ? setIsLiked(true)
-    //     : setIsLiked(false);
-    // }
+    const response = await updateDataWithJWT(`posts/like/${id}`, null, token);
+    if (response.status) {
+      setIsLiked(true);
+
+      showLike(response.data, id);
+    }
+  };
+
+  const handleUnLike = async (id: string) => {
+    const response = await updateDataWithJWT(`posts/unlike/${id}`, null, token);
+    if (response.status) {
+      setIsLiked(false);
+      console.log(response);
+      showUnLike(response.data, id);
+    }
   };
 
   const makeComment = async (e: any, text: any, id: any) => {
@@ -60,15 +73,21 @@ const index = ({ item, filterItems }: any) => {
       { text },
       token
     );
-    console.log(response.data.comments);
+    console.log(response.data);
     if (response.status) {
-      setComment((prevComments: any) => [
-        ...prevComments,
-        response.data.comments[response.data.comments.length - 1],
-      ]);
+      showComment(response.data, id);
     }
-    console.log(comment);
+    // if (response.status) {
+    //   setComment((prevComments: any) => {
+    //     return [
+    //       ...prevComments,
+    //       response.data.comments[response.data.comments.length - 1],
+    //     ];
+    //   });
+    // }
+    // console.log(comment);
   };
+
   const handlePostDel = async (e: any, postId: string) => {
     e.preventDefault();
     const response = await deleteDataWithJWT(`posts/${postId}`, token);
@@ -77,6 +96,7 @@ const index = ({ item, filterItems }: any) => {
       successToast(response.message);
     }
   };
+
   return (
     <section className="mt-4 border-gray-300 border w-full bg-white shadow-white">
       <div className="flex flex-col space-y-2">
@@ -84,7 +104,15 @@ const index = ({ item, filterItems }: any) => {
         <div className="flex px-4 justify-between items-center mt-4">
           <div className="flex space-x-2 items-center">
             <div className="w-10 h-10 border-gray-400 rounded-full">
-              <div className="w-10 h-10 bg-gradient-to-tr from-yellow-400 to bg-fuchsia-500 rounded-full ring-2 ring-offset-2"></div>
+              <img
+                src={
+                  item.postedBy.photo
+                    ? item.postedBy.photo
+                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcZHZkZFOA8sW0MCEom45CGwmnJdl-RsK5n6-vEbSyqcYBvLBwkLTaYB8gjBXAO9ABhVs&usqp=CAU"
+                }
+                alt="profile pic"
+                className="w-10 h-10 object-contain rounded-full border"
+              />
             </div>
             <div
               className="font-semibold hover:underline hover:cursor-pointer"
@@ -108,8 +136,8 @@ const index = ({ item, filterItems }: any) => {
         {/* 2nd div- picture*/}
         <div className="w-full aspect-video border  ">
           <img
-            src={item.photo}
-            alt="ipicture"
+            src={item.photo ? item.photo : ""}
+            alt="picture"
             className="w-full object-cover h-96"
           />
         </div>
@@ -121,7 +149,7 @@ const index = ({ item, filterItems }: any) => {
                 <BsHeartFill
                   size={20}
                   className="text-red-500"
-                  onClick={(e: any) => handleLike(item._id)}
+                  onClick={(e: any) => handleUnLike(item._id)}
                 />
               ) : (
                 <BsHeart
@@ -150,10 +178,11 @@ const index = ({ item, filterItems }: any) => {
           <p>{item.body}</p>
         </div>
         {/* 5th div-comments*/}
-        {comment.map((comm: any, i: number) => (
+
+        {item.comments.map((comm: any, i: number) => (
           <div key={i} className="px-4 flex space-x-2">
             <span className="font-semibold">
-              {comm.postedBy?.userName || "Unknown User"}
+              {comm.postedBy.userName ? comm.postedBy.userName : "Unknown User"}
             </span>
             <span>{comm.text}</span>
           </div>
@@ -165,13 +194,15 @@ const index = ({ item, filterItems }: any) => {
       <div className="px-4 py-1 border-b-gray-300 border-t-gray-300 border mt-1">
         <form
           className="flex space-x-4 items-center "
-          onSubmit={(e: any) => makeComment(e, e.target[0].value, item._id)}
+          onSubmit={(e: any) => makeComment(e, comment, item._id)}
         >
           <BsEmojiSmile size={20} />
           <input
             type="text"
             placeholder="Add a comment..."
             className="outline-none w-full"
+            value={comment}
+            onChange={(e: any) => setComment(e.target.value)}
           />
           <Button variant="contained" type="submit">
             Post

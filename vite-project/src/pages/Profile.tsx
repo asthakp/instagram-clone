@@ -3,42 +3,55 @@ import image from "../images/Instagram.png";
 import { getDataWithJWT } from "../service/axios.service";
 import { jwtToken } from "../utils/helper.utils";
 import { useSelector } from "react-redux";
+import PicModal from "./PicModal";
 
 const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
+  const [user, setUser] = useState<any>({});
+
   const token = jwtToken();
   const { loggedUser } = useSelector((state: any) => state.auth);
 
   const getUserPosts = async () => {
-    const response = await getDataWithJWT("posts/myposts", token);
+    const response = await getDataWithJWT(`users/${loggedUser}`, token);
     if (response.status) {
-      setUserPosts(response.data);
+      setUserPosts(response.data.posts);
+      setUser(response.data.user);
     }
   };
   useEffect(() => {
     getUserPosts();
   }, []);
 
+  //Profile pic of users
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
-    <div className="w-[60%] shadow-lg px-14 mt-20 mx-auto">
+    <div className="w-[60%] shadow-lg px-14 mt-20 mx-auto min-h-[550px]">
       <div className="flex justify-between items-center">
         <div>
           <img
-            src={image}
+            src={
+              user.photo
+                ? user.photo
+                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcZHZkZFOA8sW0MCEom45CGwmnJdl-RsK5n6-vEbSyqcYBvLBwkLTaYB8gjBXAO9ABhVs&usqp=CAU"
+            }
             alt="profile pic"
-            className="w-20 h-20 object-contain rounded-full border"
+            className="w-20 h-20 object-cover rounded-full border"
+            onClick={handleOpen}
           />
           <p className="font-semibold mt-1"></p>
         </div>
-        <div className="flex space-x-10">
+        <div className="flex flex-col justify-start md:flex-row space-x-4">
           <div className="posts ">
             <span>{userPosts.length}posts</span>
           </div>
           <div className="followers">
-            <span>40 followers</span>
+            <span>{user.followers ? user.followers.length : 0} followers</span>
           </div>
           <div className="following">
-            <span>40 following</span>
+            <span>{user.following ? user.following.length : 0} following</span>
           </div>
         </div>
       </div>
@@ -62,6 +75,7 @@ const Profile = () => {
           <p className="text-xl">No posts</p>
         </div>
       )}
+      <PicModal open={open} handleClose={handleClose} handleOpen={handleOpen} />
     </div>
   );
 };

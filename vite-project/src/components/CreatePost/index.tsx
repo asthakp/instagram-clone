@@ -66,7 +66,7 @@ const Index = () => {
       data.append("cloud_name", "dcw");
 
       const response = await postFileInCloudinary("/image/upload", data);
-      console.log(response);
+
       if (response) {
         setImageUrl(response.secure_url);
       }

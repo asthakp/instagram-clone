@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Post from "../models/post.model";
+import User from "../models/users.model";
 
 export const createPost = async (req: any, res: Response) => {
   try {
@@ -34,8 +35,9 @@ export const createPost = async (req: any, res: Response) => {
 export const getPost = async (req: any, res: Response) => {
   try {
     const posts = await Post.find({})
-      .populate("postedBy", "_id userName")
+      .populate("postedBy", "_id userName photo ")
       .sort({ createdAt: -1 });
+
     return res.status(200).json({
       status: true,
       data: posts,
@@ -53,7 +55,7 @@ export const getPersonalPosts = async (req: any, res: Response) => {
   try {
     const userPosts = await Post.find({ postedBy: req.user._id }).populate(
       "postedBy",
-      "_id userName"
+      "_id userName "
     );
     return res.status(200).json({
       status: true,

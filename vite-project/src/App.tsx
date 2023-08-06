@@ -8,17 +8,20 @@ import CreatePost from "./components/CreatePost/index.tsx";
 import { ToastContainer } from "react-toastify";
 import Header from "./components/Header/Header.tsx";
 import OthersProfile from "./pages/Userprofile.tsx";
+import SecureRoute from "./routes/SecureRoute.tsx";
 function App() {
   return (
     <>
       <Routes>
         <Route path="/signin" element={<Signin />} />
         <Route path="/" element={<Signup />} />
-        <Route path="/" element={<Header />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/usersprofile/:id" element={<OthersProfile />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/add" element={<CreatePost />} />
+        <Route path="/" element={<SecureRoute />}>
+          <Route path="/" element={<Header />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/usersprofile/:id" element={<OthersProfile />} />
+            <Route path="/feed" element={<Feed />} />
+            <Route path="/add" element={<CreatePost />} />
+          </Route>
         </Route>
       </Routes>
       <ToastContainer />
