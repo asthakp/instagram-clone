@@ -36,6 +36,7 @@ export const getPost = async (req: any, res: Response) => {
   try {
     const posts = await Post.find({})
       .populate("postedBy", "_id userName photo ")
+      .populate("comments.postedBy", "_id userName")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -132,6 +133,7 @@ export const commentPost = async (req: any, res: Response) => {
       { new: true }
     )
       .populate("comments.postedBy", "_id userName")
+      .populate("postedBy", "userName _id")
       .exec();
 
     if (!result) {

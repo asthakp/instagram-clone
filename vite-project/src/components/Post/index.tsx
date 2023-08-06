@@ -96,7 +96,7 @@ const index = ({
       successToast(response.message);
     }
   };
-
+  console.log(item);
   return (
     <section className="mt-4 border-gray-300 border w-full bg-white shadow-white">
       <div className="flex flex-col space-y-2">
