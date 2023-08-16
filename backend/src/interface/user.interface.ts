@@ -9,5 +9,10 @@ interface UserInterface extends Document {
   followers: mongoose.Schema.Types.ObjectId;
   following: mongoose.Schema.Types.ObjectId;
   photo: String;
+  stories: {
+    user: mongoose.Schema.Types.ObjectId;
+    storyPic: String;
+    storyDate: Date;
+  };
 }
 export default UserInterface;

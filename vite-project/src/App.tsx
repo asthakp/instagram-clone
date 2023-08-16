@@ -7,8 +7,10 @@ import Feed from "./components/Feed/feed.tsx";
 import CreatePost from "./components/CreatePost/index.tsx";
 import { ToastContainer } from "react-toastify";
 import Header from "./components/Header/Header.tsx";
+import Footer from "./components/Footer/footer.tsx";
 import OthersProfile from "./pages/Userprofile.tsx";
 import SecureRoute from "./routes/SecureRoute.tsx";
+import SearchUser from "./pages/SearchUser.tsx";
 function App() {
   return (
     <>
@@ -17,10 +19,13 @@ function App() {
         <Route path="/" element={<Signup />} />
         <Route path="/" element={<SecureRoute />}>
           <Route path="/" element={<Header />}>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/usersprofile/:id" element={<OthersProfile />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/add" element={<CreatePost />} />
+            <Route path="/" element={<Footer />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/usersprofile/:id" element={<OthersProfile />} />
+              <Route path="/feed" element={<Feed />} />
+              <Route path="/add" element={<CreatePost />} />
+              <Route path="/search" element={<SearchUser />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

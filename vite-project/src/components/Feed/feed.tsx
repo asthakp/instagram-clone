@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
+import Footer from "../Footer/footer";
 import Post from "../Post/index";
 import Story from "../Story/index";
 import { getDataWithJWT } from "../../service/axios.service";
@@ -7,16 +8,12 @@ import { jwtToken } from "../../utils/helper.utils";
 
 const feed = () => {
   const [posts, setPosts] = useState<any>([]);
-  const [comments, setComments] = useState<any>([]);
+  const [stories, setStories] = useState<any>([]);
   const token = jwtToken();
 
   const getPosts = async () => {
     const response = await getDataWithJWT("posts", token);
     if (response.status) {
-      // const newComments = response.data.map((resp: any) => {
-      //   return resp.comments;
-      // });
-      // setComments(newComments);
       setPosts(response.data);
     }
   };
@@ -50,15 +47,25 @@ const feed = () => {
     setPosts(commentedPost);
   };
 
+  //get all the stories
+  const getStories = async () => {
+    const response = await getDataWithJWT("users/getstory", token);
+    console.log(response);
+  };
+
   useEffect(() => {
     getPosts();
   }, []);
 
+  useEffect(() => {
+    getStories();
+  }, []);
+
   return (
-    <div className="w-full h-full bg-[#FAFAFA]">
+    <div className="w-full  bg-[#FAFAFA]">
       <Header />
       <div className="w-full max-w-screen-lg grid grid-cols-3 mt-20 mx-auto gap-4 ">
-        <div className="w-full min-h-full col-span-2">
+        <div className="w-full min-h-full col-span-3 sm:col-span-2">
           <Story />
           <div className="flex flex-col space-y-10">
             {posts.map((item: any, i: any) => {
@@ -86,6 +93,8 @@ const feed = () => {
           cum? Porro, at dicta rem in dolores fugit natus fugiat earum magnam?
         </div> */}
       </div>
+
+      <Footer />
     </div>
   );
 };

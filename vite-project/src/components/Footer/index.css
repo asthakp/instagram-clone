@@ -1,0 +1,27 @@
+.bottom-div {
+  height: 50px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+}
+
+@media screen and (min-height: 801px) {
+  .bottom-div {
+    height: 80px;
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    z-index: 50;
+  }
+}
+
+@media screen and (min-height: 852px) {
+  .bottom-div {
+    height: 80px;
+    position: fixed;
+    bottom: 120px;
+    left: 0;
+    z-index: 50;
+  }
+}

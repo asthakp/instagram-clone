@@ -211,3 +211,71 @@ export const uploadProfilePic = async (req: any, res: Response) => {
     });
   }
 };
+
+export const addStory = async (req: any, res: Response) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $push: {
+          stories: {
+            user: req.user._id,
+            storyPic: req.body.image,
+            storyDate: new Date(),
+          },
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      status: true,
+      data: user,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export const getStory = async (req: any, res: Response) => {
+  try {
+    const userStories = await User.find({
+      "stories.storyDate": {
+        $lte: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      },
+    }).select("_id userName photo stories");
+
+    // less than 24 hrs
+    return res.status(200).json({
+      status: true,
+      data: userStories,
+    });
+  } catch (error: any) {
+    console.log(error);
+    return res.status(500).json({
+      status: false,
+      error: error,
+    });
+  }
+};
+
+export const searchUser = async (req: any, res: Response) => {
+  try {
+    const searchPattern = new RegExp("^" + req.body.query.toLowerCase()); //^n: gives string starting with n
+    const user = await User.find({
+      userName: { $regex: searchPattern },
+    }).select("_id userName photo");
+    return res.status(200).json({
+      status: true,
+      data: user,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: false,
+      error: error.message,
+    });
+  }
+};

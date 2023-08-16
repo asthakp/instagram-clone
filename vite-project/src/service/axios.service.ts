@@ -29,7 +29,7 @@ export const getDataWithJWT = async (url: string, token: any) => {
     });
     return response.data;
   } catch (error: any) {
-    errorToast(error.response.data.error);
+    console.log(error);
   }
 };
 

@@ -62,7 +62,6 @@ export default function BasicModal({ open, handleClose, handleOpen }: any) {
           setImageUrl("");
         }
       }
-      handleClose();
     };
     postToServer();
   }, [imageUrl]);
@@ -101,7 +100,9 @@ export default function BasicModal({ open, handleClose, handleOpen }: any) {
               </label>
             </div>
             <hr />
-            <Button variant="text">Remove</Button>
+            <Button variant="text" onClick={(e) => setPhoto(null)}>
+              Remove
+            </Button>
             <hr />
             <Button variant="text" onClick={handleClose}>
               Cancel

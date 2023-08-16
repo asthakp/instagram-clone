@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema<UserInterface>(
     photo: {
       type: String,
     },
+    stories: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        storyPic: String,
+        storyDate: Date,
+      },
+    ],
   },
   {
     timestamps: true,
