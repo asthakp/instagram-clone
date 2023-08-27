@@ -7,6 +7,7 @@ export const postData = async (url: string, data: any) => {
     const response = await axios.post(`${SERVER_URL}/${url}`, data);
     return response.data;
   } catch (error: any) {
+    console.log(error);
     errorToast(error.response.data.error);
   }
 };

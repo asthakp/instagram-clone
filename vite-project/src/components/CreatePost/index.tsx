@@ -75,7 +75,7 @@ const Index = () => {
 
   return (
     <div className="w-full h-full flex items-center justify-center mt-20 p-10">
-      <div className="w-[40%] shadow-lg mt-3 px-5 pb-10">
+      <div className="w-full sm:w-[40%] shadow-lg mt-3 px-5 pb-10">
         <p className="text-center font-bold text-xl mb-2">Create a post</p>
 
         <label

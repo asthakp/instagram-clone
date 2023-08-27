@@ -29,7 +29,7 @@ const Signin = () => {
       dispatch(login(response.data.jwt));
       dispatch(userId(response.data._id));
     } else {
-      errorToast(response.message);
+      errorToast(response.error);
     }
   };
 

@@ -4,6 +4,7 @@ import { getDataWithJWT } from "../service/axios.service";
 import { jwtToken } from "../utils/helper.utils";
 import { useSelector } from "react-redux";
 import PicModal from "./PicModal";
+import "./index.css";
 
 const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
@@ -28,7 +29,7 @@ const Profile = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
-    <div className="w-[60%] shadow-lg px-14 mt-20 mx-auto min-h-[550px]">
+    <div className="profile w-full sm:w-[60%] shadow-lg px-14  mx-auto min-h-[550px]">
       <div className="flex justify-between items-center">
         <div>
           <img

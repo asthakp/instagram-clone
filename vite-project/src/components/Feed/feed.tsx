@@ -8,7 +8,7 @@ import { jwtToken } from "../../utils/helper.utils";
 
 const feed = () => {
   const [posts, setPosts] = useState<any>([]);
-  const [stories, setStories] = useState<any>([]);
+
   const token = jwtToken();
 
   const getPosts = async () => {
@@ -47,18 +47,8 @@ const feed = () => {
     setPosts(commentedPost);
   };
 
-  //get all the stories
-  const getStories = async () => {
-    const response = await getDataWithJWT("users/getstory", token);
-    console.log(response);
-  };
-
   useEffect(() => {
     getPosts();
-  }, []);
-
-  useEffect(() => {
-    getStories();
   }, []);
 
   return (

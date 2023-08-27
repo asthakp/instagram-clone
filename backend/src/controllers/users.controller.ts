@@ -38,10 +38,10 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { userName, password } = req.body;
     const isUser: any = await User.findOne({ userName });
-    if (!userName) {
+    if (!isUser) {
       return res.status(401).json({
         status: false,
-        message: "invalid username or password",
+        error: "invalid username or password",
       });
     } else {
       const matchPass = await isUser.matchPassword(password);
@@ -74,7 +74,7 @@ export const loginUser = async (req: Request, res: Response) => {
       } else {
         return res.status(401).json({
           status: false,
-          message: "Invalid user or password",
+          error: "Invalid user or password",
         });
       }
     }
@@ -251,7 +251,7 @@ export const getStory = async (req: any, res: Response) => {
     // less than 24 hrs
     return res.status(200).json({
       status: true,
-      data: userStories,
+      userStories,
     });
   } catch (error: any) {
     console.log(error);

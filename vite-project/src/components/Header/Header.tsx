@@ -67,11 +67,12 @@ const header = () => {
           className="w-32 object-cover ml-2 md:ml-8 "
           onClick={(e: any) => Navigate("/feed")}
         />
-        <div>
+        <div className="sm:w-80">
           <input
             type="text"
             placeholder="Search"
-            className="w-full outline-none h-10 bg-[rgb(228,224,224)] hover:bg-transparent focus:bg-transparent border py-1 px-2 mr-5 rounded-md"
+            className="w-full outline-none h-10 bg-[rgb(228,224,224)] hover:bg-transparent focus:bg-transparent border py-1 px-2 mr-5 rounded-md "
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
